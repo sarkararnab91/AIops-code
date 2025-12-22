@@ -1,0 +1,25 @@
+{
+  "navigationFallback": {
+    "rewrite": "index.html"
+  },
+  "responseOverrides": {
+    "404": {
+      "rewrite": "index.html"
+    }
+  },
+  "mimeTypes": {
+    ".json": "application/json",
+    ".wasm": "application/wasm"
+  },
+  "auth": {
+    "identityProviders": {
+      "azureActiveDirectory": {
+        "registration": {
+          "openIdIssuer": "https://login.microsoftonline.com",
+          "clientIdSettingName": "AZURE_CLIENT_ID",
+          "clientSecretSettingName": "AZURE_CLIENT_SECRET"
+        }
+      }
+    }
+  }
+}
