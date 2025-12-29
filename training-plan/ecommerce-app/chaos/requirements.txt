@@ -1,0 +1,7 @@
+# Chaos Engineering Dependencies
+
+httpx>=0.26.0
+kubernetes>=28.1.0
+asyncio>=3.4.3
+pydantic>=2.5.0
+structlog>=24.1.0
