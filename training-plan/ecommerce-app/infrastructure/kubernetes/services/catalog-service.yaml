@@ -1,0 +1,88 @@
+# Catalog Service Kubernetes Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-service
+  namespace: ecommerce
+  labels:
+    app: catalog-service
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog-service
+  template:
+    metadata:
+      labels:
+        app: catalog-service
+        tier: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+    spec:
+      containers:
+        - name: catalog-service
+          image: ${ACR_LOGIN_SERVER}/catalog-service:latest
+          ports:
+            - containerPort: 8001
+          env:
+            - name: PORT
+              value: "8001"
+          envFrom:
+            - configMapRef:
+                name: ecommerce-config
+            - secretRef:
+                name: ecommerce-secrets
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 15
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-service
+  namespace: ecommerce
+spec:
+  selector:
+    app: catalog-service
+  ports:
+    - port: 8001
+      targetPort: 8001
+  type: ClusterIP
+---
+# KEDA ScaledObject for scale-to-zero
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: catalog-service-scaler
+  namespace: ecommerce
+spec:
+  scaleTargetRef:
+    name: catalog-service
+  minReplicaCount: 0  # Scale to zero when idle
+  maxReplicaCount: 5
+  cooldownPeriod: 300  # 5 minutes before scaling to zero
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-server.monitoring:80
+        metricName: http_requests_total
+        threshold: "10"
+        query: sum(rate(http_requests_total{service="catalog-service"}[1m]))

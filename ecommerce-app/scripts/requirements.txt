@@ -1,0 +1,4 @@
+azure-cosmos
+redis
+azure-servicebus
+python-dotenv

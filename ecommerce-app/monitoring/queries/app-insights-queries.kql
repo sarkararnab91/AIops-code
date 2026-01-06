@@ -1,0 +1,113 @@
+// ============================================================
+// APPLICATION INSIGHTS KQL QUERY LIBRARY
+// ============================================================
+
+// 1. Request Performance Overview
+requests
+| where timestamp > ago(1h)
+| summarize 
+    RequestCount = count(),
+    AvgDuration = avg(duration),
+    P50 = percentile(duration, 50),
+    P95 = percentile(duration, 95),
+    P99 = percentile(duration, 99),
+    FailureRate = 100.0 * countif(success == false) / count()
+| project RequestCount, AvgDuration, P50, P95, P99, FailureRate
+
+// 2. Requests by Service
+requests
+| where timestamp > ago(1h)
+| extend Service = tostring(customDimensions["service.name"])
+| summarize 
+    Count = count(),
+    AvgDuration = avg(duration),
+    Failures = countif(success == false)
+    by Service
+| order by Count desc
+
+// 3. Slowest Endpoints
+requests
+| where timestamp > ago(1h)
+| summarize 
+    AvgDuration = avg(duration),
+    P95 = percentile(duration, 95),
+    Count = count()
+    by name
+| where Count > 10
+| order by P95 desc
+| take 10
+
+// 4. Error Rate Trend
+requests
+| where timestamp > ago(24h)
+| summarize 
+    Total = count(),
+    Failed = countif(success == false)
+    by bin(timestamp, 15m)
+| extend ErrorRate = 100.0 * Failed / Total
+| project timestamp, ErrorRate
+
+// 5. Dependency Performance (Cosmos DB, Redis, etc.)
+dependencies
+| where timestamp > ago(1h)
+| summarize 
+    Calls = count(),
+    AvgDuration = avg(duration),
+    FailureRate = 100.0 * countif(success == false) / count()
+    by type, target
+| order by AvgDuration desc
+
+// 6. Exception Summary
+exceptions
+| where timestamp > ago(1h)
+| summarize Count = count() by type, outerMessage
+| order by Count desc
+| take 20
+
+// 7. Custom Events (Business Metrics)
+customEvents
+| where timestamp > ago(1h)
+| where name in ("product_searched", "product_created", "order_created")
+| summarize Count = count() by name
+| render piechart
+
+// 8. End-to-End Transaction Trace
+union requests, dependencies, traces, exceptions
+| where operation_Id == "YOUR_OPERATION_ID"
+| order by timestamp asc
+| project timestamp, itemType, name, duration, success, message
+
+// 9. Service Health Dashboard
+let timeRange = ago(1h);
+let requests_summary = requests
+| where timestamp > timeRange
+| summarize 
+    RequestCount = count(),
+    FailureCount = countif(success == false),
+    AvgDuration = avg(duration)
+    by cloud_RoleName;
+let dependency_summary = dependencies
+| where timestamp > timeRange
+| summarize 
+    DepCalls = count(),
+    DepFailures = countif(success == false)
+    by cloud_RoleName;
+requests_summary
+| join kind=leftouter dependency_summary on cloud_RoleName
+| project 
+    Service = cloud_RoleName,
+    Requests = RequestCount,
+    RequestFailures = FailureCount,
+    AvgLatency = AvgDuration,
+    DependencyCalls = DepCalls,
+    DependencyFailures = DepFailures
+
+// 10. Real-time Performance Monitoring
+requests
+| where timestamp > ago(5m)
+| summarize 
+    Count = count(),
+    AvgDuration = avg(duration),
+    MaxDuration = max(duration)
+    by bin(timestamp, 30s), name
+| render timechart

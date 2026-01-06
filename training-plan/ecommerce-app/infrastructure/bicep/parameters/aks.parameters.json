@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "aiops-aks"
+    },
+    "location": {
+      "value": "eastus"
+    },
+    "tags": {
+      "value": {
+        "AutoShutdown": "true",
+        "CostCenter": "aiops-lab",
+        "CreatedDate": "",
+        "DeleteAfter": "2026-03-06",
+        "Environment": "dev",
+        "Lab": "",
+        "Owner": "arnabsarkar",
+        "Project": "aiops-training",
+        "Purpose": "AIOps",
+        "Training": ""
+      }
+    },
+    "adminUsername": {
+      "value": "sarkararnab91"
+    },
+    "sshPublicKey": {
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDlzeHPlcVhRJWFzMOo5VVFle8N5u0S4bjI+eFK88xGX4YItqJZj1jCc/6IiS/9+DgF058bZTAZARUTCv2LiMdXkqGCPbxjPf7t3Up/ZUpAL//O/j36WZhV/svctldEsH/T4Mi1wkTgeHqb6awMOdjACkblgTd9+PXgMfC3c1+mBAtIKcXYHlYDlB7DSYbRZX88P2R6GOvbvnhtBG+49Pn3ZWcME9bnw+ieQ9sgiLk0wjl7MQMiNK+G71JJAM3TlLJKen0Ew6oSuTET1uNuMXn/FQ8uNMv6tBD298tH5aIOuXOgfdzm9KzrhVWcoj0qNMN2CXEuuxwBp5uu0AIavocrhA1kjXomyqcsstNw68GUWzZu7qcES6i05lMBxkj55fFQBnDugg5SRzEljOtmt33Qw3x1n4swYewiGFIHnV7jGNiaN9+chB39JjSmZH94+eAjcVjWuOy2HLzcoqcX6oFuRIT7AeD5JLKJrYfS3U1NxXObPQppOl6Y7pJb2zsWb5HTa5ktBCwHJtNhsPyrCdRfAj80b5n1yc2m/pOrdr1gDHh3KNTxwMGQ2VPwvqgc9hQBOw/Yx1Ro1a0qd7Ygl+zHJO+I+uKmat3QcU/57T2Ph/ZXsqZM4d0crHp1y4EF9VMTktpRt7MiMqd6oPKNa4PyH8fQhZGCvfnTzr2r8feMSQ== DELL@DELL"
+    },
+    "aadTenantId": {
+      "value": "cf53f651-2805-4bc3-9183-74fa867f82e9"
+    },
+    "logAnalyticsWorkspaceId": {
+      "value": "/subscriptions/e041e74d-cf34-42e7-b62d-1de099e8b2b2/resourceGroups/DefaultResourceGroup-CCAN/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-e041e74d-cf34-42e7-b62d-1de099e8b2b2-CCAN"
+    },
+    "containerRegistryId": {
+      "value": "/subscriptions/e041e74d-cf34-42e7-b62d-1de099e8b2b2/resourceGroups/aiops-training-rg/providers/Microsoft.ContainerRegistry/registries/aiopstrainacr"
+    }
+  }
+}
