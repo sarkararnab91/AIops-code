@@ -1121,18 +1121,54 @@ EXPOSE 8001
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
 ```
 
+### Step 6: Build and Deploy
+
+Build the container images and push to Azure Container Registry:
+
+```bash
+# Set your registry name
+export REGISTRY_NAME=aiopstrainacr
+
+# Build and push images
+az acr build --registry $REGISTRY_NAME --image catalog-service:v1 ./services/catalog-service
+az acr build --registry $REGISTRY_NAME --image inventory-service:v1 ./services/inventory-service
+az acr build --registry $REGISTRY_NAME --image user-service:v2 ./services/user-service
+```
+
+Create Kubernetes manifests in `infrastructure/kubernetes/services/`:
+
+1. `secrets.yaml` (Store Cosmos DB context)
+2. `catalog.yaml` (Deployment & Service)
+3. `inventory.yaml` (Deployment & Service)
+4. `user.yaml` (Deployment & Service)
+
+Deploy to AKS:
+
+```bash
+kubectl apply -f infrastructure/kubernetes/services/
+```
+
+Verify deployment:
+
+```bash
+kubectl get pods
+kubectl logs -l app=catalog-service
+kubectl logs -l app=inventory-service
+kubectl logs -l app=user-service
+```
+
 ---
 
-## 🧪 Verification Checklist
+##  Verification Checklist
 
 Before moving to the next session, ensure you have:
 
-- [ ] Shared models created in `ecommerce-app/shared/`
-- [ ] Catalog Service with CRUD operations for products
-- [ ] Inventory Service with stock management
-- [ ] User Service with JWT authentication
-- [ ] All services can connect to Cosmos DB
-- [ ] Health endpoints working (`/health`)
+- [x] Shared models created in `ecommerce-app/shared/`
+- [x] Catalog Service with CRUD operations for products
+- [x] Inventory Service with stock management
+- [x] User Service with JWT authentication
+- [x] All services can connect to Cosmos DB
+- [x] Health endpoints working (`/health`)
 
 ---
 

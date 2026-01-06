@@ -1,0 +1,135 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# 🛒 E-Commerce Service Health Dashboard\n\nReal-time monitoring of all microservices in the Perfume & Dessert e-commerce platform."
+      },
+      "name": "header"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "name": "TimeRange",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 3600000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                { "durationMs": 300000, "displayName": "Last 5 minutes" },
+                { "durationMs": 900000, "displayName": "Last 15 minutes" },
+                { "durationMs": 1800000, "displayName": "Last 30 minutes" },
+                { "durationMs": 3600000, "displayName": "Last 1 hour" },
+                { "durationMs": 14400000, "displayName": "Last 4 hours" },
+                { "durationMs": 86400000, "displayName": "Last 24 hours" }
+              ]
+            }
+          }
+        ]
+      },
+      "name": "parameters"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| where timestamp > ago(1h)\n| summarize Requests = count(), Failures = countif(success == false)\n| extend SuccessRate = round(100.0 * (Requests - Failures) / Requests, 1)",
+        "size": 4,
+        "title": "Overall Health",
+        "queryType": 0,
+        "visualization": "tiles",
+        "tileSettings": {
+          "showBorder": false,
+          "titleContent": {
+            "columnMatch": "Requests"
+          }
+        }
+      },
+      "name": "overall-health"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| where timestamp > {TimeRange:query}\n| summarize \n    Requests = count(),\n    Failures = countif(success == false),\n    AvgLatency = round(avg(duration), 0),\n    P95Latency = round(percentile(duration, 95), 0)\n    by Service = cloud_RoleName\n| extend FailureRate = round(100.0 * Failures / Requests, 2)\n| order by Requests desc",
+        "size": 0,
+        "title": "Service Performance",
+        "queryType": 0,
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "FailureRate",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "redGreen"
+              }
+            },
+            {
+              "columnMatch": "AvgLatency",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "blue"
+              }
+            }
+          ]
+        }
+      },
+      "name": "service-performance"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| where timestamp > {TimeRange:query}\n| summarize Count = count() by bin(timestamp, 5m), cloud_RoleName\n| render timechart",
+        "size": 0,
+        "title": "Request Volume by Service",
+        "queryType": 0,
+        "visualization": "timechart"
+      },
+      "name": "request-volume"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| where timestamp > {TimeRange:query}\n| summarize ErrorRate = 100.0 * countif(success == false) / count() by bin(timestamp, 5m)\n| render timechart",
+        "size": 0,
+        "title": "Error Rate Trend",
+        "queryType": 0,
+        "visualization": "timechart"
+      },
+      "name": "error-rate-trend"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "dependencies\n| where timestamp > {TimeRange:query}\n| summarize \n    Calls = count(),\n    Failures = countif(success == false),\n    AvgDuration = round(avg(duration), 0)\n    by type, target\n| extend FailureRate = round(100.0 * Failures / Calls, 2)\n| order by Calls desc",
+        "size": 0,
+        "title": "Dependency Health",
+        "queryType": 0,
+        "visualization": "table"
+      },
+      "name": "dependency-health"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "exceptions\n| where timestamp > {TimeRange:query}\n| summarize Count = count() by type\n| order by Count desc\n| take 10",
+        "size": 0,
+        "title": "Top Exceptions",
+        "queryType": 0,
+        "visualization": "piechart"
+      },
+      "name": "top-exceptions"
+    }
+  ]
+}

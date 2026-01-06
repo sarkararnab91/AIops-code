@@ -1,6 +1,6 @@
 # Session 8: Log Analytics & KQL Mastery
 
-## 📋 Session Details
+##  Session Details
 - **Duration**: 1 hour
 - **Week**: 2, Day 3 (Wednesday)
 - **Prerequisites**: Sessions 1-7 completed
@@ -8,7 +8,7 @@
 
 ---
 
-## 🎯 Learning Objectives
+##  Learning Objectives
 
 By the end of this session, you will:
 1. Master KQL (Kusto Query Language) fundamentals
@@ -18,7 +18,7 @@ By the end of this session, you will:
 
 ---
 
-## 📚 KQL Fundamentals
+##  KQL Fundamentals
 
 ### Query Structure
 
@@ -47,7 +47,7 @@ TableName                    // 1. Start with a table
 
 ---
 
-## 🛠️ Hands-On Exercise
+##  Hands-On Exercise
 
 ### Step 1: Basic Queries
 
@@ -369,7 +369,7 @@ ErrorTrend(24h, 1h)
 
 ---
 
-## 📊 Building a Dashboard
+##  Building a Dashboard
 
 ### Dashboard Tiles Query Examples
 
@@ -412,7 +412,7 @@ requests
 
 ---
 
-## 🧪 Verification Checklist
+##  Verification Checklist
 
 Before moving to the next session, ensure you have:
 
@@ -424,7 +424,7 @@ Before moving to the next session, ensure you have:
 
 ---
 
-## 📖 Key Takeaways
+##  Key Takeaways
 
 1. **KQL is powerful** for log analysis and troubleshooting
 2. **Percentiles** (P50, P95, P99) are better than averages for latency

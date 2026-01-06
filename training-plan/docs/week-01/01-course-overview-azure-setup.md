@@ -1,14 +1,14 @@
 # Session 1: Course Overview & Azure Setup
 
-## 📋 Session Details
+##  Session Details
 - **Duration**: 1 hour
-- **Week**: 1, Day 1 (Monday)
+- **Week**: 1, Day 1 
 - **Prerequisites**: Azure subscription, VS Code installed
 - **Deliverable**: Resource group with proper tags, Azure CLI configured
 
 ---
 
-## 🎯 Learning Objectives
+##  Learning Objectives
 
 By the end of this session, you will:
 1. Understand the AIOps evolution journey (Traditional → ML → AgentOps)
@@ -18,7 +18,7 @@ By the end of this session, you will:
 
 ---
 
-## 📚 Concepts
+##  Concepts
 
 ### What is AIOps?
 
@@ -66,7 +66,7 @@ We use several techniques to keep Azure costs low:
 
 ---
 
-## 🛠️ Hands-On Exercise
+##  Hands-On Exercise
 
 ### Step 1: Install Required Tools
 
@@ -80,6 +80,15 @@ winget install Microsoft.AzureCLI
 
 # Linux (Ubuntu/Debian)
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+# Use Python-based Installation If winget doesn't work:
+# Install via pip
+pip install azure-cli
+#or 
+uv add azure-cli
+
+# Verify
+az --version
 ```
 
 ### Step 2: Login to Azure
@@ -115,9 +124,9 @@ uv --version
 ```bash
 # Define variables
 RESOURCE_GROUP="aiops-training-rg"
-LOCATION="eastus"
+LOCATION="east-us"
 TODAY=$(date +%Y-%m-%d)
-DELETE_AFTER=$(date -v+60d +%Y-%m-%d)  # 60 days from now
+DELETE_AFTER=$(date -d "+60 days" +%Y-%m-%d)
 
 # Create resource group with cost optimization tags
 az group create \
@@ -125,7 +134,7 @@ az group create \
   --location $LOCATION \
   --tags \
     Project="aiops-training" \
-    Environment="training" \
+    Environment="dev" \
     Owner="your-name" \
     AutoShutdown="true" \
     CostCenter="aiops-lab" \
@@ -180,7 +189,7 @@ az group show --name aiops-training-rg --query tags
 
 ---
 
-## 🧪 Verification Checklist
+##  Verification Checklist
 
 Before moving to the next session, ensure you have:
 
@@ -193,7 +202,7 @@ Before moving to the next session, ensure you have:
 
 ---
 
-## 📖 Key Takeaways
+##  Key Takeaways
 
 1. **AIOps is an evolution**, not a revolution - we build on traditional monitoring
 2. **Cost optimization is critical** for training environments
@@ -202,7 +211,7 @@ Before moving to the next session, ensure you have:
 
 ---
 
-## 🔜 Next Session Preview
+##  Next Session Preview
 
 **Session 2: AKS Deployment with Scale-to-Zero**
 - Deploy Azure Kubernetes Service cluster
@@ -211,7 +220,7 @@ Before moving to the next session, ensure you have:
 
 ---
 
-## 📚 Additional Resources
+##  Additional Resources
 
 - [Azure CLI Documentation](https://docs.microsoft.com/en-us/cli/azure/)
 - [AIOps Gartner Definition](https://www.gartner.com/en/information-technology/glossary/aiops)

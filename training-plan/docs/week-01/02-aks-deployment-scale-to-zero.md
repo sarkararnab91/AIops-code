@@ -1,14 +1,14 @@
 # Session 2: AKS Deployment with Scale-to-Zero
 
-## 📋 Session Details
+## Session Details
 - **Duration**: 1 hour
-- **Week**: 1, Day 2 (Tuesday)
+- **Week**: 1, Day 2 
 - **Prerequisites**: Session 1 completed, Resource group created
 - **Deliverable**: Running AKS cluster with scale-to-zero autoscaler
 
 ---
 
-## 🎯 Learning Objectives
+##  Learning Objectives
 
 By the end of this session, you will:
 1. Understand Azure Kubernetes Service (AKS) architecture
@@ -18,7 +18,7 @@ By the end of this session, you will:
 
 ---
 
-## 📚 Concepts
+##  Concepts
 
 ### Why Kubernetes for Microservices?
 
@@ -73,11 +73,23 @@ The cluster autoscaler can scale node pools to zero when no workloads need them:
 
 ---
 
-## 🛠️ Hands-On Exercise
+##  Hands-On Exercise
 
 ### Step 1: Register Required Providers
 
+**Bash:**
 ```bash
+# Register required Azure providers
+az provider register --namespace Microsoft.ContainerService
+az provider register --namespace Microsoft.OperationsManagement
+az provider register --namespace Microsoft.OperationalInsights
+
+# Check registration status
+az provider show -n Microsoft.ContainerService --query "registrationState"
+```
+
+**PowerShell:**
+```powershell
 # Register required Azure providers
 az provider register --namespace Microsoft.ContainerService
 az provider register --namespace Microsoft.OperationsManagement
@@ -91,9 +103,16 @@ az provider show -n Microsoft.ContainerService --query "registrationState"
 
 Create the Bicep template file:
 
+**Bash:**
 ```bash
 # Create infrastructure directory
 mkdir -p ecommerce-app/infrastructure/bicep
+```
+
+**PowerShell:**
+```powershell
+# Create infrastructure directory
+New-Item -ItemType Directory -Force -Path ecommerce-app/infrastructure/bicep
 ```
 
 Create `ecommerce-app/infrastructure/bicep/aks.bicep`:
@@ -164,22 +183,34 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2024-01-01' = {
     dnsPrefix: dnsPrefix
     kubernetesVersion: '1.28'
     
-    // Default node pool with scale-to-zero
+    // Node Pools configuration
     agentPoolProfiles: [
+      // System Pool (Critical services, min 1)
       {
-        name: 'systempool'
-        count: 1  // Initial count
+        name: 'system'
+        count: 1
         vmSize: nodeVMSize
         osType: 'Linux'
-        osDiskSizeGB: 30
         mode: 'System'
         enableAutoScaling: true
-        minCount: minNodeCount
-        maxCount: maxNodeCount
-        // Scale-to-zero settings
-        scaleDownMode: 'Delete'  // Delete nodes when scaling down
+        minCount: 1      // System pool cannot be 0
+        maxCount: 2
         type: 'VirtualMachineScaleSets'
-        availabilityZones: []  // No zones for cost savings
+        availabilityZones: []
+      }
+      // Workload Pool (User apps, scale-to-zero)
+      {
+        name: 'workload'
+        count: 0
+        vmSize: nodeVMSize
+        osType: 'Linux'
+        mode: 'User'     // User pool can scale to 0
+        enableAutoScaling: true
+        minCount: 0      // Scale to zero enabled!
+        maxCount: maxNodeCount
+        scaleDownMode: 'Delete'
+        type: 'VirtualMachineScaleSets'
+        availabilityZones: []
       }
     ]
     
@@ -215,6 +246,7 @@ output logAnalyticsWorkspaceId string = logAnalytics.id
 
 ### Step 3: Deploy AKS Cluster
 
+**Bash:**
 ```bash
 # Set variables
 RESOURCE_GROUP="aiops-training-rg"
@@ -222,19 +254,33 @@ RESOURCE_GROUP="aiops-training-rg"
 # Deploy the AKS cluster
 az deployment group create \
   --resource-group $RESOURCE_GROUP \
-  --template-file ecommerce-app/infrastructure/bicep/aks.bicep \
-  --parameters \
-    clusterName="aiops-aks" \
-    minNodeCount=0 \
-    maxNodeCount=3 \
-    environment="training"
+  --template-file ecommerce-app/infrastructure/bicep/modules/aks.bicep \
+  --parameters @ecommerce-app/infrastructure/bicep/parameters/aks.parameters.json
+
+# This takes about 5-10 minutes
+```
+
+**PowerShell:**
+```powershell
+# Set variables
+$RESOURCE_GROUP = "aiops-training-rg"
+
+# Deploy the AKS cluster
+az deployment group create `
+  --resource-group $RESOURCE_GROUP `
+  --template-file ecommerce-app/infrastructure/bicep/modules/aks.bicep `
+  --parameters @ecommerce-app/infrastructure/bicep/parameters/aks.parameters.json
 
 # This takes about 5-10 minutes
 ```
 
 ### Step 4: Connect to AKS Cluster
 
+**Bash:**
 ```bash
+# Set variable
+RESOURCE_GROUP="aiops-training-rg"
+
 # Get cluster credentials
 az aks get-credentials \
   --resource-group $RESOURCE_GROUP \
@@ -251,15 +297,60 @@ kubectl cluster-info
 kubectl get namespaces
 ```
 
+**PowerShell:**
+```powershell
+#install kubelogin tool 
+az aks install-cli
+
+# Set variable
+$RESOURCE_GROUP = "aiops-training-rg"
+
+# Get cluster credentials
+az aks get-credentials `
+  --resource-group $RESOURCE_GROUP `
+  --name aiops-aks `
+  --overwrite-existing
+
+# Verify connection
+kubectl get nodes
+
+# Check cluster info
+kubectl cluster-info
+
+# View namespaces
+kubectl get namespaces
+```
+
 ### Step 5: Verify Autoscaler Configuration
 
+**Bash:**
 ```bash
+# Set variable
+RESOURCE_GROUP="aiops-training-rg"
+
 # Check node pool configuration
 az aks nodepool show \
   --resource-group $RESOURCE_GROUP \
   --cluster-name aiops-aks \
-  --name systempool \
+  --name system \
   --query "{name:name, minCount:minCount, maxCount:maxCount, enableAutoScaling:enableAutoScaling}" \
+  --output table
+
+# View cluster autoscaler logs (once pods are running)
+kubectl -n kube-system logs -l component=cluster-autoscaler --tail=50
+```
+
+**PowerShell:**
+```powershell
+# Set variable
+$RESOURCE_GROUP = "aiops-training-rg"
+
+# Check node pool configuration
+az aks nodepool show `
+  --resource-group $RESOURCE_GROUP `
+  --cluster-name aiops-aks `
+  --name system `
+  --query "{name:name, minCount:minCount, maxCount:maxCount, enableAutoScaling:enableAutoScaling}" `
   --output table
 
 # View cluster autoscaler logs (once pods are running)
@@ -268,6 +359,7 @@ kubectl -n kube-system logs -l component=cluster-autoscaler --tail=50
 
 ### Step 6: Test Scale-to-Zero (Optional)
 
+**Bash:**
 ```bash
 # Scale down workloads to trigger scale-to-zero
 # (In a real scenario, this happens automatically when no pods are scheduled)
@@ -281,21 +373,41 @@ kubectl get nodes
 # The cluster will scale back up when workloads are deployed
 ```
 
+**PowerShell:**
+```powershell
+# Scale down workloads to trigger scale-to-zero
+# (In a real scenario, this happens automatically when no pods are scheduled)
+
+# Force scale down by cordoning and draining the node
+kubectl get nodes
+# kubectl cordon <node-name>
+# kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data
+
+# Wait 10 minutes for autoscaler to remove the node
+# The cluster will scale back up when workloads are deployed
+```
+System Pool: stays at 1 node (Cost: ~$0.10/hr)
+User Pool: scales 0-3 nodes (Cost: $0.00/hr when idle)
+Running the command to create the user pool:
+
+az aks nodepool add --resource-group aiops-training-rg --cluster-name aiops-aks --name userpool --mode User --min-count 0 --max-count 3 --enable-cluster-autoscaler --node-vm-size Standard_B2s
+
+az aks nodepool list --resource-group aiops-training-rg --cluster-name aiops-aks --output table
 ---
 
-## 🧪 Verification Checklist
+##  Verification Checklist
 
 Before moving to the next session, ensure you have:
 
 - [ ] AKS cluster `aiops-aks` deployed successfully
 - [ ] Log Analytics workspace created for monitoring
 - [ ] kubectl connected to the cluster
-- [ ] Autoscaling enabled with min=0, max=3
+- [ ] Autoscaling enabled 
 - [ ] Tags applied correctly to all resources
 
 ---
 
-## 💡 Cost Optimization Tips
+##  Cost Optimization Tips
 
 1. **Scale-to-Zero**: The cluster will automatically scale down when idle
 2. **B-series VMs**: Use burstable VMs for training workloads
@@ -303,19 +415,37 @@ Before moving to the next session, ensure you have:
 4. **30-day log retention**: Minimum retention for cost savings
 5. **Manual scale-down**: You can manually scale to 0 nodes after sessions
 
+**Bash:**
 ```bash
 # Manually scale node pool to 0 (optional - for maximum savings)
 az aks nodepool scale \
   --resource-group $RESOURCE_GROUP \
   --cluster-name aiops-aks \
-  --name systempool \
+  --name system \
   --node-count 0
 
 # Scale back up before next session
 az aks nodepool scale \
   --resource-group $RESOURCE_GROUP \
   --cluster-name aiops-aks \
-  --name systempool \
+  --name system \
+  --node-count 1
+```
+
+**PowerShell:**
+```powershell
+# Manually scale node pool to 0 (optional - for maximum savings)
+az aks nodepool scale `
+  --resource-group $RESOURCE_GROUP `
+  --cluster-name aiops-aks `
+  --name system `
+  --node-count 0
+
+# Scale back up before next session
+az aks nodepool scale `
+  --resource-group $RESOURCE_GROUP `
+  --cluster-name aiops-aks `
+  --name system `
   --node-count 1
 ```
 

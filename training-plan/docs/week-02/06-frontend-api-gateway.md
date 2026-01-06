@@ -1,14 +1,14 @@
 # Session 6: Vue.js Frontend & API Gateway
 
-## 📋 Session Details
+##  Session Details
 - **Duration**: 1 hour
-- **Week**: 2, Day 1 (Monday)
+- **Week**: 2, Day 1 
 - **Prerequisites**: Sessions 1-5 completed, all services running
 - **Deliverable**: Complete e-commerce UI functional with API gateway
 
 ---
 
-## 🎯 Learning Objectives
+##  Learning Objectives
 
 By the end of this session, you will:
 1. Set up a Vue.js frontend for the e-commerce application
@@ -18,7 +18,7 @@ By the end of this session, you will:
 
 ---
 
-## 📚 Concepts
+##  Concepts
 
 ### Frontend Architecture
 
@@ -66,7 +66,7 @@ By the end of this session, you will:
 
 ---
 
-## 🛠️ Hands-On Exercise
+##  Hands-On Exercise
 
 ### Step 1: Create Vue.js Project
 
@@ -675,16 +675,16 @@ kubectl get ingress -n ecommerce
 
 ---
 
-## 🧪 Verification Checklist
+##  Verification Checklist
 
 Before moving to the next session, ensure you have:
 
-- [ ] Vue.js project created with Vite
-- [ ] API client with interceptors
-- [ ] Pinia stores for state management
-- [ ] Kubernetes services deployed
-- [ ] Ingress controller installed
-- [ ] Frontend accessible via ingress
+- [x] Vue.js project created with Vite
+- [x] API client with interceptors
+- [x] Pinia stores for state management
+- [x] Kubernetes services deployed
+- [x] Ingress controller installed
+- [x] Frontend accessible via ingress
 
 ---
 

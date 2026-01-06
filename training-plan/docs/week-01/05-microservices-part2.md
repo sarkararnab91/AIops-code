@@ -1350,6 +1350,47 @@ if __name__ == "__main__":
     uvicorn.run(app, host=settings.host, port=settings.port)
 ```
 
+### Step 5: Deploy to AKS
+
+1. **Build Docker Images**
+
+   Build the container images and push them to your Azure Container Registry:
+
+   ```bash
+   # Build Cart Service
+   az acr build --registry aiopstrainacr --image cart-service:v1 ./services/cart-service
+
+   # Build Payment Service
+   az acr build --registry aiopstrainacr --image payment-service:v1 ./services/payment-service
+
+   # Build Order Service
+   az acr build --registry aiopstrainacr --image order-service:v1 ./services/order-service
+
+   # Build Notification Service
+   az acr build --registry aiopstrainacr --image notification-service:v1 ./services/notification-service
+   ```
+
+2. **Deploy to Kubernetes**
+
+   Apply the deployment manifests to your AKS cluster:
+
+   ```bash
+   kubectl apply -f infrastructure/kubernetes/services/cart.yaml
+   kubectl apply -f infrastructure/kubernetes/services/payment.yaml
+   kubectl apply -f infrastructure/kubernetes/services/order.yaml
+   kubectl apply -f infrastructure/kubernetes/services/notification.yaml
+   ```
+
+3. **Verify Deployment**
+
+   Check that all pods are running:
+
+   ```bash
+   kubectl get pods
+   ```
+
+   You should see all four new services (cart, payment, order, notification) in the `Running` state.
+
 ---
 
 ## 🧪 Verification Checklist

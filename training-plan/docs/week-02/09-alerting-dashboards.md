@@ -1,14 +1,14 @@
 # Session 9: Alerting & Dashboards
 
-## 📋 Session Details
+##  Session Details
 - **Duration**: 1 hour
-- **Week**: 2, Day 4 (Thursday)
+- **Week**: 2, Day 4 
 - **Prerequisites**: Sessions 1-8 completed
 - **Deliverable**: Azure alerts and workbooks configured
 
 ---
 
-## 🎯 Learning Objectives
+##  Learning Objectives
 
 By the end of this session, you will:
 1. Configure metric-based alerts
@@ -18,7 +18,7 @@ By the end of this session, you will:
 
 ---
 
-## 📚 Concepts
+##  Concepts
 
 ### Alert Types
 
@@ -53,7 +53,7 @@ By the end of this session, you will:
 
 ---
 
-## 🛠️ Hands-On Exercise
+##  Hands-On Exercise
 
 ### Step 1: Create Alert Rules with Bicep
 
@@ -547,7 +547,7 @@ az monitor workbook create \
 
 ---
 
-## 🧪 Verification Checklist
+##  Verification Checklist
 
 Before moving to the next session, ensure you have:
 

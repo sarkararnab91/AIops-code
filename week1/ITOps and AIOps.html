@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITOps and AIOps</title>
+    <style>
+        /* Theme Variables */
+        :root {
+            --font-family-display: Arial, sans-serif;
+            --font-weight-display: 600;
+            --font-family-content: Arial, sans-serif;
+            --font-weight-content: 400;
+            --font-size-content: 16px;
+            --line-height-content: 1.4;
+        }
+
+        /* Dark Theme */
+        body.theme-dark {
+            --color-bg-base: #0f172a;
+            --color-bg-elevated: #020617;
+            --color-bg-surface: #1e293b;
+            --color-bg-muted: #334155;
+            --color-text-primary: #f1f5f9;
+            --color-text-secondary: #cbd5e1;
+            --color-text-muted: #94a3b8;
+            --color-text-accent: #38bdf8;
+            --color-primary: #38bdf8;
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-content);
+            font-weight: var(--font-weight-content);
+            font-size: var(--font-size-content);
+            line-height: var(--line-height-content);
+            overflow-x: hidden;
+        }
+
+        .slide {
+            width: 960px;
+            height: 540px;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Layout Utilities */
+        .row { flex-direction: row; }
+        .col { flex-direction: column; }
+        .center {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .space-between { justify-content: space-between; }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .fill-width { flex: 1; }
+        .fill-height { flex: 1; display: flex; flex-direction: column; }
+        .gap-sm { gap: 0.5rem; }
+        .gap-md { gap: 1rem; }
+        .gap-lg { gap: 1.5rem; }
+        .gap-xl { gap: 2rem; }
+
+        /* Spacing */
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .p-12 { padding: 3rem; }
+        .p-16 { padding: 4rem; }
+
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-12 { margin-bottom: 3rem; }
+
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-display);
+            font-weight: var(--font-weight-display);
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        h1 { font-size: 3rem; }
+        h2 { font-size: 2.25rem; }
+        h3 { font-size: 1.75rem; }
+        h4 { font-size: 1.5rem; }
+
+        .text-6xl { font-size: 3.75rem; }
+        .text-5xl { font-size: 3rem; }
+        .text-4xl { font-size: 2.25rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-base { font-size: 1rem; }
+        .text-sm { font-size: 0.875rem; }
+
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
+
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+
+        .opacity-80 { opacity: 0.8; }
+        .opacity-70 { opacity: 0.7; }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 2rem;
+            line-height: 1.8;
+        }
+
+        ul li { list-style: disc; }
+        li { margin-bottom: 0.75rem; }
+        li:last-child { margin-bottom: 0; }
+
+        /* Card Styles */
+        .card {
+            padding: 2rem;
+            background-color: #1e293b;
+            color: #f1f5f9;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h3 {
+            color: #38bdf8;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body class="theme-dark">
+
+    <!-- Slide 1: Title -->
+    <section class="slide p-16 col center" style="background-color: #020617; color: #f1f5f9;">
+        <h1 class="text-6xl mb-4" style="color: #38bdf8;">ITOps & AIOps</h1>
+        <p class="text-2xl mb-8" style="color: #cbd5e1;">Intelligent IT Operations Transformation</p>
+        <p class="text-lg" style="color: #94a3b8;">Azure-Centric Deep Dive into Modern Operations</p>
+        <p class="text-sm mt-8" style="color: #94a3b8;">December 2024 • AI/Product Leadership</p>
+    </section>
+
+    <!-- Slide 2: What is ITOps? -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">What is ITOps?</h2>
+        <div class="fill-height">
+            <ul class="text-lg" style="color: #cbd5e1;">
+                <li><strong style="color: #38bdf8;">IT Operations (ITOps)</strong> = team & processes managing organizational IT infrastructure</li>
+                <li>Ensures continuous uptime, performance, security across all systems</li>
+                <li>Manages hybrid/cloud/on-premises environments (servers, networks, storage)</li>
+                <li>Bridges business requirements with technical execution</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 3: Core ITOps Functions -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">ITOps Core Functions</h2>
+        <div class="grid-2 fill-height">
+            <div class="card">
+                <h3>🏗️ Infrastructure Management</h3>
+                <p>Server provisioning, virtualization, cloud resources, device lifecycle, system configuration</p>
+            </div>
+            <div class="card">
+                <h3>📊 Monitoring & Observability</h3>
+                <p>Real-time health tracking, metric collection, log aggregation, alerting mechanisms</p>
+            </div>
+            <div class="card">
+                <h3>🔧 Incident Management</h3>
+                <p>Detection, triage, resolution, root cause analysis, post-incident reviews</p>
+            </div>
+            <div class="card">
+                <h3>🛡️ Security & Compliance</h3>
+                <p>Access control, vulnerability management, audit trails, regulatory compliance</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 4: ITOps Goals & Metrics -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">ITOps Goals & Key Metrics</h2>
+        <div class="fill-height">
+            <ul class="text-lg" style="color: #cbd5e1;">
+                <li><strong style="color: #38bdf8;">SLA (Service Level Agreement)</strong> – Contractual uptime commitment (e.g., 99.9%)</li>
+                <li><strong style="color: #38bdf8;">SLI (Service Level Indicator)</strong> – Measurable metric (uptime %, latency, error rate)</li>
+                <li><strong style="color: #38bdf8;">SLO (Service Level Objective)</strong> – Target performance (e.g., 99.9% uptime)</li>
+                <li>Minimize MTTR (Mean Time To Recovery) & MTTI (Mean Time To Identify)</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 5: ITOps Challenges -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">Key Challenges in ITOps</h2>
+        <div class="fill-height">
+            <ul class="text-lg" style="color: #cbd5e1;">
+                <li><strong style="color: #38bdf8;">Alert Fatigue</strong> – Overwhelming alerts; difficult to distinguish critical from noise</li>
+                <li><strong style="color: #38bdf8;">Silos</strong> – Fragmented monitoring across apps, infrastructure, networks</li>
+                <li><strong style="color: #38bdf8;">Speed Pressure</strong> – DevOps acceleration demands faster incident resolution</li>
+                <li><strong style="color: #38bdf8;">Complexity</strong> – Cloud-native, microservices, distributed systems are hard to troubleshoot</li>
+                <li><strong style="color: #38bdf8;">Skills Gap</strong> – Shortage of experienced operations engineers</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 6: DevOps & Agile Evolution -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">Evolution: DevOps & Agile Context</h2>
+        <p class="text-lg mb-6" style="color: #cbd5e1;">
+            <strong>DevOps</strong> broke silos between development and operations. <strong>Agile</strong> accelerated release cycles.
+        </p>
+        <div class="grid-2 fill-height">
+            <div class="card">
+                <h3>DevOps Impact</h3>
+                <p>Continuous deployment (CI/CD), Infrastructure-as-Code, shared responsibility, faster feedback loops</p>
+            </div>
+            <div class="card">
+                <h3>Agile Demands</h3>
+                <p>Faster releases, continuous changes, need for real-time observability, rapid incident response</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: Where AIOps Sits -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">AIOps: Bridging the Gap</h2>
+        <p class="text-base mb-6" style="color: #cbd5e1; line-height: 1.8;">
+            <strong style="color: #38bdf8;">AIOps (AI for IT Operations)</strong> = AI/ML applied to ITOps processes
+        </p>
+        <div class="grid-3 fill-height">
+            <div class="card">
+                <h3>Agile Enablement</h3>
+                <p>Handles high-velocity changes, rapid incident detection</p>
+            </div>
+            <div class="card">
+                <h3>DevOps Support</h3>
+                <p>Automated remediation, cross-team insights, shared context</p>
+            </div>
+            <div class="card">
+                <h3>ITOps Evolution</h3>
+                <p>Smarter monitoring, predictive insights, self-healing</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8: AIOps Use Cases Overview -->
+    <section class="slide p-16 col center" style="background-color: #020617; color: #f1f5f9;">
+        <h2 class="text-4xl mb-8" style="color: #38bdf8;">AIOps Use Cases</h2>
+        <p class="text-lg" style="color: #cbd5e1;">Deep-dive into 6 critical domains</p>
+    </section>
+
+    <!-- Slide 9: Monitoring & Alerting (1) -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">Use Case A: Monitoring & Alerting</h2>
+        <p class="text-base mb-4" style="color: #cbd5e1;">
+            <strong style="color: #38bdf8;">Challenge:</strong> Alert fatigue from 10,000+ daily signals
+        </p>
+        <div class="fill-height">
+            <ul class="text-lg" style="color: #cbd5e1;">
+                <li><strong style="color: #38bdf8;">Anomaly Detection</strong> – Machine learning identifies abnormal patterns in metrics/logs</li>
+                <li><strong style="color: #38bdf8;">Dynamic Thresholding</strong> – Auto-set baselines (Azure Monitor's dynamic thresholds)</li>
+                <li><strong style="color: #38bdf8;">Alert Correlation</strong> – Group related alerts, reduce noise by 70%+</li>
+                <li><strong style="color: #38bdf8;">Smart Alerting</strong> – ML learns which alerts actually matter to humans</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 10: Monitoring & Alerting - Azure Example -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-4" style="color: #38bdf8;">Azure Example: Anomaly Detection</h2>
+        <div class="fill-height">
+            <p class="text-base mb-4" style="color: #cbd5e1;">
+                <strong style="color: #38bdf8;">Azure Monitor - AiDice Algorithm:</strong> Detects multi-dimensional anomalies
+            </p>
+            <ul class="text-base" style="color: #cbd5e1;">
+                <li>Analyzes 1000s of dimensions (region, error code, VM) simultaneously</li>
+                <li>Identifies root dimension causing spike (e.g., "East US region traffic +300%")</li>
+                <li>Provides context reducing MTTI from 2 hours to 15 minutes</li>
+                <li>Works on CPU, memory, network, custom metrics</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 11: Security & Compliance -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">Use Case B: Security & Compliance</h2>
+        <div class="grid-2 fill-height">
+            <div class="card">
+                <h3>🔐 Anomaly Detection</h3>
+                <p>Unusual login patterns, failed auth spikes, unauthorized API calls</p>
+            </div>
+            <div class="card">
+                <h3>🛡️ Intrusion Detection</h3>
+                <p>ML models identify attack signatures, zero-day patterns in network traffic</p>
+            </div>
+            <div class="card">
+                <h3>📧 Spam Classification</h3>
+                <p>Filter malicious emails, phishing attempts using NLP</p>
+            </div>
+            <div class="card">
+                <h3>✅ Audit Trail</h3>
+                <p>Auto-correlate security events, maintain compliance audit logs</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 12: Security & Compliance - Azure Example -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-4" style="color: #38bdf8;">Azure Example: Threat Detection</h2>
+        <div class="fill-height">
+            <p class="text-base mb-4" style="color: #cbd5e1;">
+                <strong style="color: #38bdf8;">Azure Defender + ML:</strong> Real-time threat hunting
+            </p>
+            <ul class="text-base" style="color: #cbd5e1;">
+                <li>Detects: brute force attacks, privilege escalation, lateral movement</li>
+                <li>Correlates logs, network traffic, identity events in real-time</li>
+                <li>Generates security investigations with AI context</li>
+                <li>Typical: detects 50k+ daily threats across enterprise</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 13: Problem Resolution Part 1 -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">Use Case C: Automated Problem Resolution</h2>
+        <p class="text-base mb-4" style="color: #cbd5e1;">
+            <strong style="color: #38bdf8;">Goal:</strong> Reduce MTTR from 2 hours to 15 minutes via automation
+        </p>
+        <div class="fill-height">
+            <ul class="text-base" style="color: #cbd5e1;">
+                <li><strong style="color: #38bdf8;">Root Cause Analysis (RCA)</strong> – ML correlates logs/metrics to find source</li>
+                <li><strong style="color: #38bdf8;">Automated Remediation</strong> – Trigger fixes (restart pod, scale out, rollback)</li>
+                <li><strong style="color: #38bdf8;">Self-Healing</strong> – System self-corrects without human intervention</li>
+                <li><strong style="color: #38bdf8;">Change Correlation</strong> – Link incidents to recent code/config changes</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 14: RCA - Azure Example -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-4" style="color: #38bdf8;">Azure Example: Incident Root Cause Analysis</h2>
+        <p class="text-base mb-4" style="color: #cbd5e1;">
+            <strong style="color: #38bdf8;">Azure Monitor Issues & Investigations (Preview):</strong>
+        </p>
+        <div class="fill-height">
+            <ul class="text-base" style="color: #cbd5e1;">
+                <li>Click "Investigate" on alert → AI auto-analyzes 2-hour window</li>
+                <li>Correlates metric anomalies, logs, resource health, recent changes</li>
+                <li>Generates 5 ranked findings with evidence & mitigation steps</li>
+                <li>Example: "VM disk space 95% due to log file overflow caused by config change 30 min ago"</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 15: Capacity Planning -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">Use Case D: Capacity Planning & Forecasting</h2>
+        <div class="fill-height">
+            <ul class="text-lg" style="color: #cbd5e1;">
+                <li><strong style="color: #38bdf8;">Predictive Scaling</strong> – ML forecasts CPU/memory 24-48 hours ahead</li>
+                <li><strong style="color: #38bdf8;">Load Forecasting</strong> – Time-series models predict traffic spikes</li>
+                <li><strong style="color: #38bdf8;">Cost Optimization</strong> – Right-size instances, avoid over-provisioning</li>
+                <li><strong style="color: #38bdf8;">Drift Detection</strong> – Retraining only when data patterns change (cost-effective)</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 16: Capacity Planning - Azure Example -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-4" style="color: #38bdf8;">Azure Example: Predictive Autoscale</h2>
+        <div class="fill-height">
+            <p class="text-base mb-4" style="color: #cbd5e1;">
+                <strong style="color: #38bdf8;">Azure Virtual Machine Scale Sets + ML:</strong>
+            </p>
+            <ul class="text-base" style="color: #cbd5e1;">
+                <li>Forecasts CPU demand based on historical patterns + seasonality</li>
+                <li>Scales out proactively before traffic surge (vs. reactive scaling)</li>
+                <li>Real example: 30% cost reduction while maintaining SLA</li>
+                <li>Learns weekend vs. weekday vs. quarterly patterns</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 17: Self-Service Helpdesk -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">Use Case E: Self-Service IT Help Desk</h2>
+        <div class="grid-2 fill-height">
+            <div class="card">
+                <h3>🤖 AI Chatbots</h3>
+                <p>Natural language understanding for common issues (password reset, VPN, etc.)</p>
+            </div>
+            <div class="card">
+                <h3>🎯 Incident Categorization</h3>
+                <p>Auto-classify tickets, route to correct team, assign priority</p>
+            </div>
+            <div class="card">
+                <h3>💡 Knowledge Search</h3>
+                <p>ML semantic search finds relevant KB articles instantly</p>
+            </div>
+            <div class="card">
+                <h3>⚡ First-Contact Resolution</h3>
+                <p>Resolve 40-60% of tickets without human intervention</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 18: Helpdesk - Azure Example -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-4" style="color: #38bdf8;">Azure Example: Automated Incident Routing</h2>
+        <div class="fill-height">
+            <p class="text-base mb-4" style="color: #cbd5e1;">
+                <strong style="color: #38bdf8;">Azure Automation + Azure DevOps:</strong>
+            </p>
+            <ul class="text-base" style="color: #cbd5e1;">
+                <li>Alert from monitor → Auto-creates incident ticket in Azure DevOps</li>
+                <li>ML classifies severity & assigns to right team (database, app, network)</li>
+                <li>Runbooks auto-execute diagnostics (logs, metrics, health checks)</li>
+                <li>Updates ticket with findings; escalates if severity increases</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 19: Additional Use Cases -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">Use Case F: Additional Advanced Use Cases</h2>
+        <div class="grid-2 fill-height">
+            <div class="card">
+                <h3>📉 Predictive Service Downtime</h3>
+                <p>Forecast failures 1-7 days ahead; trigger preventive maintenance</p>
+            </div>
+            <div class="card">
+                <h3>🔗 Service Load Forecasting</h3>
+                <p>Predict database query volume, API call rates by time/context</p>
+            </div>
+            <div class="card">
+                <h3>🎛️ Cost Anomaly Analysis</h3>
+                <p>Detect unusual cloud spending (rogue resource, misconfigured instance)</p>
+            </div>
+            <div class="card">
+                <h3>📊 Performance Optimization</h3>
+                <p>Identify slow queries, memory leaks, inefficient code patterns</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 20: AIOps Architecture (Cycle) -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">AIOps Operational Cycle</h2>
+        <p class="text-base mb-4" style="color: #cbd5e1;">
+            <strong style="color: #38bdf8;">Data → Intelligence → Action → Feedback Loop</strong>
+        </p>
+        <div class="fill-height">
+            <ul class="text-lg" style="color: #cbd5e1;">
+                <li><strong style="color: #38bdf8;">Collect:</strong> Logs, metrics, traces, events from all systems</li>
+                <li><strong style="color: #38bdf8;">Analyze:</strong> ML detects anomalies, correlates data, generates insights</li>
+                <li><strong style="color: #38bdf8;">Respond:</strong> Auto-remediate or alert humans with context</li>
+                <li><strong style="color: #38bdf8;">Learn:</strong> Feedback improves models; prevent recurrence</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 21: Azure Monitor Ecosystem -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-4" style="color: #38bdf8;">Azure Monitoring & AIOps Stack</h2>
+        <div class="fill-height">
+            <p class="text-base mb-4" style="color: #cbd5e1;">
+                <strong style="color: #38bdf8;">End-to-end platform for intelligent operations:</strong>
+            </p>
+            <ul class="text-base" style="color: #cbd5e1;">
+                <li><strong style="color: #38bdf8;">Azure Monitor:</strong> Central observability (metrics, logs, traces, application insights)</li>
+                <li><strong style="color: #38bdf8;">Log Analytics:</strong> KQL queries + ML functions (anomaly detection, forecasting, RCA)</li>
+                <li><strong style="color: #38bdf8;">Azure Automation:</strong> Execute remediation runbooks, scale resources</li>
+                <li><strong style="color: #38bdf8;">Azure DevOps:</strong> Incident tracking, change correlation, audit trails</li>
+                <li><strong style="color: #38bdf8;">Microsoft Copilot:</strong> Natural language query generation for analysis</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 22: Implementation Roadmap -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">AIOps Implementation Roadmap</h2>
+        <div class="grid-3 fill-height">
+            <div class="card">
+                <h3>Phase 1: Foundation</h3>
+                <p>Centralize monitoring, baseline metrics, establish SLIs</p>
+            </div>
+            <div class="card">
+                <h3>Phase 2: Intelligence</h3>
+                <p>Deploy anomaly detection, dynamic thresholds, correlation</p>
+            </div>
+            <div class="card">
+                <h3>Phase 3: Automation</h3>
+                <p>Build remediation runbooks, self-healing, predictive actions</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 23: Key Benefits -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-6" style="color: #38bdf8;">AIOps Business Impact</h2>
+        <div class="fill-height">
+            <ul class="text-lg" style="color: #cbd5e1;">
+                <li><strong style="color: #38bdf8;">70% faster incident detection</strong> (via anomaly detection)</li>
+                <li><strong style="color: #38bdf8;">60% reduction in MTTR</strong> (via auto-remediation & RCA)</li>
+                <li><strong style="color: #38bdf8;">99.99% uptime</strong> during peak events (self-healing)</li>
+                <li><strong style="color: #38bdf8;">30% cost optimization</strong> (predictive scaling, right-sizing)</li>
+                <li><strong style="color: #38bdf8;">50% reduction in alerts</strong> (via correlation & filtering)</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 24: Key Challenges & Mitigation -->
+    <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+        <h2 class="mb-4" style="color: #38bdf8;">Implementation Challenges</h2>
+        <div class="fill-height">
+            <p class="text-base mb-4" style="color: #cbd5e1;">
+                <strong style="color: #38bdf8;">Common obstacles & solutions:</strong>
+            </p>
+            <ul class="text-base" style="color: #cbd5e1;">
+                <li><strong style="color: #38bdf8;">Data Quality:</strong> Ensure consistent logging, avoid schema drift</li>
+                <li><strong style="color: #38bdf8;">Ownership:</strong> Clear SRE/DevOps team responsibility for AIOps</li>
+                <li><strong style="color: #38bdf8;">Trust:</strong> Start with low-risk automation; validate outputs</li>
+                <li><strong style="color: #38bdf8;">Cost:</strong> Plan for data ingestion costs; optimize retention</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 25: Closing -->
+    <section class="slide p-16 col center" style="background-color: #020617; color: #f1f5f9;">
+        <h2 class="text-5xl mb-8" style="color: #38bdf8;">The Future of ITOps</h2>
+        <p class="text-xl mb-4" style="color: #cbd5e1;">AI-driven operations enable:</p>
+        <p class="text-lg" style="color: #cbd5e1;">Proactive incident prevention • Faster resolution • Cost optimization • Team empowerment</p>
+        <p class="text-sm mt-8" style="color: #94a3b8;">Azure & Cloud-Native Excellence</p>
+    </section>
+
+</body>
+</html>

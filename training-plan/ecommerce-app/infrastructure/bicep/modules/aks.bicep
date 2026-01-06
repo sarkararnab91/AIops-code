@@ -39,7 +39,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2024-01-01' = {
   }
   properties: {
     dnsPrefix: name
-    kubernetesVersion: '1.28'
+    kubernetesVersion: '1.32.9'
     
     // Agent pool configuration - minimal for training
     agentPoolProfiles: [
@@ -124,10 +124,12 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2024-01-01' = {
       azurepolicy: {
         enabled: false  // Disable for training to reduce complexity
       }
-      // KEDA - Kubernetes Event-Driven Autoscaling
-      kedaAddon: {
+    }
+
+    // KEDA - Kubernetes Event-Driven Autoscaling
+    workloadAutoScalerProfile: {
+      keda: {
         enabled: true
-        config: {}
       }
     }
     
@@ -135,12 +137,12 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2024-01-01' = {
     autoUpgradeProfile: {
       upgradeChannel: 'stable'
     }
-    
-    // SKU for free tier
-    sku: {
-      name: 'Base'
-      tier: 'Free'  // Free tier for training
-    }
+  }
+  
+  // SKU for free tier (at resource level, not in properties)
+  sku: {
+    name: 'Base'
+    tier: 'Free'
   }
 }
 
@@ -163,4 +165,4 @@ output clusterName string = aksCluster.name
 output clusterFqdn string = aksCluster.properties.fqdn
 output clusterResourceId string = aksCluster.id
 output kubeletIdentityObjectId string = aksCluster.properties.identityProfile.kubeletidentity.objectId
-output oidcIssuerUrl string = aksCluster.properties.oidcIssuerProfile.issuerURL
+// output oidcIssuerUrl string = aksCluster.properties.oidcIssuerProfile.issuerURL

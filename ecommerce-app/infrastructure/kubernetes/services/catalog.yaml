@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog-service
+  template:
+    metadata:
+      labels:
+        app: catalog-service
+    spec:
+      containers:
+      - name: catalog-service
+        image: aiopstrainacr.azurecr.io/catalog-service:v2
+        ports:
+        - containerPort: 8001
+        env:
+        - name: COSMOS_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: COSMOS_DB_ENDPOINT
+        - name: COSMOS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: COSMOS_DB_KEY
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-service
+spec:
+  selector:
+    app: catalog-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8001
+  type: ClusterIP

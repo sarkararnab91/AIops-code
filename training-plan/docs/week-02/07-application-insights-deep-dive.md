@@ -1,14 +1,14 @@
 # Session 7: Application Insights Deep Dive
 
-## 📋 Session Details
+##  Session Details
 - **Duration**: 1 hour
-- **Week**: 2, Day 2 (Tuesday)
+- **Week**: 2, Day 2 
 - **Prerequisites**: Sessions 1-6 completed
 - **Deliverable**: Full telemetry instrumentation across all services
 
 ---
 
-## 🎯 Learning Objectives
+##  Learning Objectives
 
 By the end of this session, you will:
 1. Configure Application Insights for all microservices
@@ -18,7 +18,7 @@ By the end of this session, you will:
 
 ---
 
-## 📚 Concepts
+##  Concepts
 
 ### Application Insights Telemetry Types
 
@@ -73,7 +73,7 @@ All telemetry correlated by operation_id!
 
 ---
 
-## 🛠️ Hands-On Exercise
+##  Hands-On Exercise
 
 ### Step 1: Create Telemetry Module
 
@@ -664,15 +664,15 @@ requests
 
 ---
 
-## 🧪 Verification Checklist
+##  Verification Checklist
 
 Before moving to the next session, ensure you have:
 
-- [ ] Telemetry module created in shared package
-- [ ] All services instrumented with Application Insights
-- [ ] Custom metrics tracking business events
-- [ ] Dependency tracking for Cosmos DB, Redis
-- [ ] KQL query library created
+- [x] Telemetry module created in shared package
+- [x] All services instrumented with Application Insights (Catalog Service completed as reference)
+- [x] Custom metrics tracking business events
+- [x] Dependency tracking for Cosmos DB, Redis
+- [x] KQL query library created
 - [ ] Telemetry visible in Azure Portal
 
 ---

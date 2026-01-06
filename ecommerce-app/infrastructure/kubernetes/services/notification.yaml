@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+      - name: notification-service
+        image: aiopstrainacr.azurecr.io/notification-service:v1
+        ports:
+        - containerPort: 8007
+        env:
+        - name: SERVICE_BUS_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: SERVICE_BUS_CONNECTION_STRING
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+spec:
+  selector:
+    app: notification-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8007
+  type: ClusterIP

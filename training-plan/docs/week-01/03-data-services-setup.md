@@ -1,14 +1,14 @@
 # Session 3: Data Services Setup (Cosmos DB, Redis, Service Bus)
 
-## 📋 Session Details
+##  Session Details
 - **Duration**: 1 hour
-- **Week**: 1, Day 3 (Wednesday)
+- **Week**: 1, Day 3 
 - **Prerequisites**: Sessions 1-2 completed, AKS cluster running
 - **Deliverable**: Cosmos DB, Redis Cache, and Service Bus deployed
 
 ---
 
-## 🎯 Learning Objectives
+##  Learning Objectives
 
 By the end of this session, you will:
 1. Deploy Cosmos DB with serverless configuration
@@ -18,7 +18,7 @@ By the end of this session, you will:
 
 ---
 
-## 📚 Concepts
+##  Concepts
 
 ### Data Architecture Overview
 
@@ -70,7 +70,7 @@ By the end of this session, you will:
 
 ---
 
-## 🛠️ Hands-On Exercise
+##  Hands-On Exercise
 
 ### Step 1: Create Combined Bicep Template for Data Services
 
@@ -280,9 +280,22 @@ SB_CONNECTION=$(az servicebus namespace authorization-rule keys list \
 echo "Service Bus: $SB_NAME"
 ```
 
-### Step 4: Test Cosmos DB Connection
+### Step 4: Configure Python Environment
 
-Create a test script `scripts/test_cosmos.py`:
+We use `uv` for fast dependency management to install the required Azure SDK libraries.
+
+**Bash/PowerShell:**
+```bash
+# Navigate to the training-plan directory (where pyproject.toml is located)
+cd training-plan
+
+# Sync dependencies using uv
+uv sync
+```
+
+### Step 5: Test Cosmos DB Connection
+
+Create a test script `ecommerce-app/scripts/test_cosmos.py`:
 
 ```python
 #!/usr/bin/env python3
@@ -354,9 +367,16 @@ if __name__ == "__main__":
     exit(0 if success else 1)
 ```
 
-### Step 5: Test Redis Connection
+Run the test:
+```bash
+# Run using the configured environment
+cd ../ecommerce-app/scripts
+../../training-plan/.venv/Scripts/python test_cosmos.py
+```
 
-Create `scripts/test_redis.py`:
+### Step 6: Test Redis Connection
+
+Create `ecommerce-app/scripts/test_redis.py`:
 
 ```python
 #!/usr/bin/env python3
@@ -422,9 +442,14 @@ if __name__ == "__main__":
     exit(0 if success else 1)
 ```
 
-### Step 6: Test Service Bus Connection
+Run the test:
+```bash
+../../training-plan/.venv/Scripts/python test_redis.py
+```
 
-Create `scripts/test_servicebus.py`:
+### Step 7: Test Service Bus Connection
+
+Create `ecommerce-app/scripts/test_servicebus.py`:
 
 ```python
 #!/usr/bin/env python3
@@ -471,8 +496,13 @@ def test_servicebus_connection():
         return True
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f" Error: {e}")
         return False
+
+Run the test:
+```bash
+../../training-plan/.venv/Scripts/python test_servicebus.py
+```
 
 if __name__ == "__main__":
     success = test_servicebus_connection()
@@ -481,7 +511,7 @@ if __name__ == "__main__":
 
 ---
 
-## 🧪 Verification Checklist
+##  Verification Checklist
 
 Before moving to the next session, ensure you have:
 
@@ -494,7 +524,7 @@ Before moving to the next session, ensure you have:
 
 ---
 
-## 💡 Cost Summary
+##  Cost Summary
 
 | Service | Configuration | Est. Monthly Cost |
 |---------|---------------|-------------------|
@@ -505,7 +535,7 @@ Before moving to the next session, ensure you have:
 
 ---
 
-## 📖 Key Takeaways
+##  Key Takeaways
 
 1. **Cosmos DB serverless** charges per request - perfect for variable workloads
 2. **Redis Basic C0** is the most cost-effective cache for training
@@ -514,7 +544,7 @@ Before moving to the next session, ensure you have:
 
 ---
 
-## 🔜 Next Session Preview
+##  Next Session Preview
 
 **Session 4: Microservices Part 1**
 - Build Catalog Service with Cosmos DB integration
