@@ -1,4 +1,4 @@
-$AppUrl = "https://traditional-bxf2fbbedsh6egay.canadacentral-01.azurewebsites.net/t" # actual URL
+$AppUrl = "https://traditional-bxf2fbbedsh6egay.canadacentral-01.azurewebsites.net" # actual URL
 Write-Host "Monitoring $AppUrl - Sending traffic..." -ForegroundColor Green
 
 while($true) {
